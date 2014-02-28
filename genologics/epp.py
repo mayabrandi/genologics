@@ -17,6 +17,7 @@ from genologics.entities import Artifact
 from genologics.config import MAIN_LOG
 from logging.handlers import RotatingFileHandler
 from time import strftime, localtime
+import csv
 
 def attach_file(src,resource):
     """Attach file at src to given resource
@@ -190,6 +191,38 @@ class EppLogger(object):
             for line in buf.rstrip().splitlines():
                 self.logger.log(self.log_level, line.rstrip())
 
+class ReadResultFiles():
+    """Class to read pars different kinds of result files from a process.
+    The class stores the parsed content of all shared result files in a 
+    dictionary 'shared_files'. The data is parsed as lists of lists. """
+
+    def __init__(self, process):
+        self.process = process
+        self.file = file
+        self.shared_files = self.pars_shared_csv()
+
+    def pars_shared_csv(self):
+        outs = self.process.all_outputs()
+        files = filter(lambda a: a.output_type == 'SharedResultFile', outs)
+        parsed_files = {}
+        for f in files:
+            if len(f.files) > 0:
+                file_path = f.files[0].content_location.split('scilifelab.se')[1]
+                if file_path.split('.')[1] == 'csv':
+                    fo = open(file_path ,'r')
+                    parsed_files[f.name] = [row for row in csv.reader(fo.read().splitlines())]
+                    fo.close()
+        return parsed_files
+
+
+class File2Field():
+    """
+    argumnets:
+    
+    file_name       """
+
+    def __init__(self, parsed_file, d_elt, relation_obj):
+        self.parsed_file = parsed_file
 
 class CopyField(object):
     """Class to copy any filed (or udf) from any lims element to any 
