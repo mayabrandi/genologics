@@ -75,7 +75,7 @@ def main(lims, args, epp_logger):
          'w' : warn,
          'pr': project_names}
 
-    abstract = ("Updated {up} udf(s). Handeled projects: {pr} {w}").format(**d)
+    abstract = ("Updated {up} udf(s). Handeled project(s): {pr} {w}").format(**d)
     print >> sys.stderr, abstract
 
 if __name__ == "__main__":
