@@ -27,6 +27,7 @@ def main(lims, args, epp_logger):
     d_elts = []
     no_updated = 0
     incorrect_udfs = 0
+    updated_projects = ''
     source_udfs = args.source_udf
     dest_udfs = args.dest_udf
     s_elt = Process(lims,id = args.pid)
