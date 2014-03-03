@@ -27,7 +27,7 @@ def main(lims, args, epp_logger):
     d_elts = []
     no_updated = 0
     incorrect_udfs = 0
-    updated_projects = ''
+    project_names = ''
     source_udfs = args.source_udf
     dest_udfs = args.dest_udf
     s_elt = Process(lims,id = args.pid)
@@ -49,8 +49,9 @@ def main(lims, args, epp_logger):
     elif len(dest_udfs) != len(source_udfs):
         logging.error("source_udfs and dest_udfs lists of arguments are uneven.")
         sys.exit()
-
+    
     for d_elt in d_elts:
+        project_names = ' '.join([project_names, d_elt.name])
         for i in range(len(source_udfs)):
             source_udf = source_udfs[i]
             dest_udf = dest_udfs[i]
@@ -72,7 +73,7 @@ def main(lims, args, epp_logger):
     d = {'up': no_updated,
          'ap': len(d_elts),
          'w' : warn,
-         'pr': ' '.join(d_elts)}
+         'pr': project_names}
 
     abstract = ("Updated {up} udf(s). Handeled projects: {pr} {w}").format(**d)
     print >> sys.stderr, abstract
