@@ -60,7 +60,7 @@ def main(lims, args, epp_logger):
                     test = copy_sesion.copy_udf(changelog_f)
                     if test:
                         no_updated = no_updated + 1
-                        updated_projects = updated_projects + s_elt.name + ' '
+                        updated_projects = updated_projects + d_elt.name + ' '
                 else:
                     logging.warning(("Udf: {1} in Process {0} is undefined/blank, exiting").format(s_elt.id, source_udf))
                     incorrect_udfs = incorrect_udfs + 1
