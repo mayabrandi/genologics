@@ -54,25 +54,27 @@ def main(lims, args, epp_logger):
             source_udf = source_udfs[i]
             dest_udf = dest_udfs[i]
             with open(args.status_changelog, 'a') as changelog_f:
-                if source_udfs in s_elt.udf:
+                if source_udf in s_elt.udf:
                     copy_sesion = CopyField(s_elt, d_elt, source_udf, dest_udf)
                     test = copy_sesion.copy_udf(changelog_f)
                     if test:
                         no_updated = no_updated + 1
+                        updated_projects = updated_projects + s_elt.name + ' '
                 else:
                     logging.warning(("Udf: {1} in Process {0} is undefined/blank, exiting").format(s_elt.id, source_udf))
                     incorrect_udfs = incorrect_udfs + 1
 
     if incorrect_udfs > 0:
-        warn = "Failed to update %s project(s) due to wrong source udf info." %incorrect_udfs
+        warn = "Failed to update %s udf(s) due to missing/wrong source udf info." %incorrect_udfs
     else:
         warn = ''
 
     d = {'up': no_updated,
          'ap': len(d_elts),
-         'w' : warn}
+         'w' : warn,
+         'pr': updated_projects}
 
-    abstract = ("Updated {up} projects(s), out of {ap} in total. {w}").format(**d)
+    abstract = ("Updated {up} projects(s), out of {ap} in total: {pr} {w}").format(**d)
     print >> sys.stderr, abstract
 
 if __name__ == "__main__":
