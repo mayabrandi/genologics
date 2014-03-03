@@ -60,7 +60,6 @@ def main(lims, args, epp_logger):
                     test = copy_sesion.copy_udf(changelog_f)
                     if test:
                         no_updated = no_updated + 1
-                        updated_projects = updated_projects + d_elt.name + ' '
                 else:
                     logging.warning(("Udf: {1} in Process {0} is undefined/blank, exiting").format(s_elt.id, source_udf))
                     incorrect_udfs = incorrect_udfs + 1
@@ -73,9 +72,9 @@ def main(lims, args, epp_logger):
     d = {'up': no_updated,
          'ap': len(d_elts),
          'w' : warn,
-         'pr': updated_projects}
+         'pr': ' '.join(d_elts)}
 
-    abstract = ("Updated {up} projects(s), out of {ap} in total: {pr} {w}").format(**d)
+    abstract = ("Updated {up} udf(s). Handeled projects: {pr} {w}").format(**d)
     print >> sys.stderr, abstract
 
 if __name__ == "__main__":
