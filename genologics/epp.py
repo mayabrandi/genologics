@@ -199,9 +199,11 @@ class ReadResultFiles():
     def __init__(self, process):
         self.process = process
         self.file = file
-        self.shared_files = self.pars_shared_csv()
+        self.shared_files = self._pars_shared_csv()
 
-    def pars_shared_csv(self):
+    def _pars_shared_csv(self):
+        """Reads a csv into a list of lists, where sub lists are lines 
+        of the csv."""
         outs = self.process.all_outputs()
         files = filter(lambda a: a.output_type == 'SharedResultFile', outs)
         parsed_files = {}
@@ -213,6 +215,33 @@ class ReadResultFiles():
                     parsed_files[f.name] = [row for row in csv.reader(fo.read().splitlines())]
                     fo.close()
         return parsed_files
+
+    def format_parsed_file(self, parsed_file, first_header = 'Sample'):
+        """Function to formate a parsed csv.
+
+        Arguments and Output:
+            parsed_file     A list of lists where sublists are rows of the csv.
+            first_header    First column of the heather section in the file. 
+                            default value is 'Sample'
+            qubit_info      dict of dicts. Keys of root dict are the first 
+                            column in the csv starting from the line after the 
+                            heather line. Keys of sub dicts are the columns of 
+                            the heather line."""
+        qubit_info = {}
+        keys = []
+        for line in parsed_file:
+            if line[0].strip() == first_header
+                keys = line
+            if keys:
+                samp = line[0]
+                qubit_info[samp] = {}
+                for col in range(len(keys))
+                    if keys[col] != '':
+                        qubit_info[samp][keys[col]] = line[col]
+                    else:
+                        qubit_info[samp][keys[col-1]] = (qubit_info[samp][keys[col-1]], line[col])
+        return qubit_info
+
 
 
 class File2Field():
