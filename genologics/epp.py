@@ -230,9 +230,6 @@ class ReadResultFiles():
         qubit_info = {}
         keys = []
         for line in parsed_file:
-            if line[0].strip() == first_header:
-                keys = line
-                break
             if keys:
                 samp = line[0]
                 qubit_info[samp] = {}
@@ -241,6 +238,8 @@ class ReadResultFiles():
                         qubit_info[samp][keys[col]] = line[col]
                     else:
                         qubit_info[samp][keys[col-1]] = (qubit_info[samp][keys[col-1]], line[col])
+            if line[0].strip() == first_header:
+                keys = line
         return qubit_info
 
 
