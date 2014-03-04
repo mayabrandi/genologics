@@ -230,12 +230,12 @@ class ReadResultFiles():
         qubit_info = {}
         keys = []
         for line in parsed_file:
-            if line[0].strip() == first_header
+            if line[0].strip() == first_header:
                 keys = line
             if keys:
                 samp = line[0]
                 qubit_info[samp] = {}
-                for col in range(len(keys))
+                for col in range(len(keys)):
                     if keys[col] != '':
                         qubit_info[samp][keys[col]] = line[col]
                     else:
