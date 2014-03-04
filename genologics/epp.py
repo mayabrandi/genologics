@@ -232,6 +232,7 @@ class ReadResultFiles():
         for line in parsed_file:
             if line[0].strip() == first_header:
                 keys = line
+                break
             if keys:
                 samp = line[0]
                 qubit_info[samp] = {}
