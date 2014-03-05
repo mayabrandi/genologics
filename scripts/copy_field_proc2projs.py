@@ -83,20 +83,20 @@ if __name__ == "__main__":
                         help=('File name for standard log file, '
                               'for runtime information and problems.'))
     parser.add_argument('-s', '--source_udf', type=str, default=None, nargs='*',
-                        help=('Name(s) of the source user defined field(s)'
-                               'that will be copied. One or many udf-names'
+                        help=('Name(s) of the source user defined field(s) '
+                               'that will be copied. One or many udf-names '
                                'can be given.'))
     parser.add_argument('-d', '--dest_udf', type=str, default=None, nargs='*',
-                        help=('Name(s) of the destination user defined'
-                              'field(s) that will be written to. This'
-                              'argument is optional, if left empty'
-                              'the source_udf argument is used instead.'
-                              'Zero or many udf-names can be given. If'
-                              'more than zero, the numer of udfs needs' 
+                        help=('Name(s) of the destination user defined '
+                              'field(s) that will be written to. This '
+                              'argument is optional, if left empty '
+                              'the source_udf argument is used instead. '
+                              'Zero or many udf-names can be given. If '
+                              'more than zero, the numer of udfs needs ' 
                               'to be the same as number of source_udfs'))
     parser.add_argument('-c', '--status_changelog',
-                        help=('File name for status changelog file, for'
-                              'concise information on who, what and when'
+                        help=('File name for status changelog file, for '
+                              'concise information on who, what and when '
                               'for status change events. '
                               'Prepends the old changelog file by default.'))
 

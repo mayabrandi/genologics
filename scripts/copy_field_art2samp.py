@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-DESC = """EPP script to copy user defined field from analyte 
-level to  submitted sample level in Clarity LIMS. Can be executed in the 
-background or triggered by a user pressing a "blue button".
+DESC = """EPP script to copy user defined fields from analyte level to 
+submitted sample level in Clarity LIMS. Can be executed in the background 
+or triggered by a user pressing a "blue button".
 
-This script can only be applied to processes where ANALYTES are modified in 
-the GUI. The script can output two different logs, where the status_changelog 
-contains notes with the technician, the date and changed status for each 
-copied status. The regular log file contains regular execution information. 
+This script can only be applied to processes where ANALYTES are modified 
+in the GUI. The script can output two different logs, where the 
+status_changelog contains notes with the technician, the date and changed 
+status for each copied status. The regular log file contains regular 
+execution information. 
 
 Error handling:
 If the udf given is blank or not defined for any of the inputs,
@@ -85,12 +86,17 @@ if __name__ == "__main__":
                         help=('File name for standard log file, '
                               ' for runtime information and problems.'))
     parser.add_argument('-s', '--source_udf', type=str, default=None, nargs='*',
-                        help=('Name of the source user defined field that will'
-                              'be copied.'))
+                        help=('Name(s) of the source user defined field(s) '
+                               'that will be copied. One or many udf-names '
+                               'can be given.'))
     parser.add_argument('-d', '--dest_udf', type=str, default=None, nargs='*',
-                        help=('Name of the destination user defined field that will'
-                              'be written to. This argument is optional, if left empty'
-                              'the source_udf argument is used instead.'))
+                        help=('Name(s) of the destination user defined '
+                              'field(s) that will be written to. This '
+                              'argument is optional, if left empty '
+                              'the source_udf argument is used instead. '
+                              'Zero or many udf-names can be given. If '
+                              'more than zero, the numer of udfs needs '
+                              'to be the same as number of source_udfs'))
     parser.add_argument('-c', '--status_changelog',
                         help=('File name for status changelog file, '
                               ' for concise information on who, what and '
