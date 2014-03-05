@@ -46,7 +46,7 @@ def main(lims, args, epp_logger):
         dest_udfs = source_udfs
     elif len(dest_udfs) != len(source_udfs):
         logging.error("source_udfs and dest_udfs lists of arguments are uneven.")
-        sys.exit()
+        sys.exit(-1)
     for i in range(len(source_udfs)):
         source_udf = source_udfs[i]
         dest_udf = dest_udfs[i]

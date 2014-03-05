@@ -45,7 +45,7 @@ def main(lims, args, epp_logger):
         dest_udfs = source_udfs
     elif len(dest_udfs) != len(source_udfs):
         logging.error("source_udfs and dest_udfs lists of arguments are uneven.")
-        sys.exit()
+        sys.exit(-1)
     
     for d_elt in d_elts:
         project_names = ' '.join([project_names, d_elt.name])
