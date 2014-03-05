@@ -36,10 +36,7 @@ def main(lims, args, epp_logger):
     artifacts, inf = p.analytes()
 
     if args.status_changelog:
-        dir = os.getcwd()
-        destination = os.path.join(dir, args.status_changelog)
-        if not os.path.isfile(destination):
-            epp_logger.prepend_old_log(args.status_changelog)
+        epp_logger.prepend_old_log(args.status_changelog)
 
     with open(args.status_changelog, 'a') as changelog_f:
         for artifact in artifacts:

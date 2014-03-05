@@ -39,10 +39,7 @@ def main(lims, args, epp_logger):
     d_elts = list(set(d_elts))
 
     if args.status_changelog:
-        dir = os.getcwd()
-        destination = os.path.join(dir, args.status_changelog)
-        if not os.path.isfile(destination):
-            epp_logger.prepend_old_log(args.status_changelog)
+        epp_logger.prepend_old_log(args.status_changelog)
 
     if not dest_udfs:
         dest_udfs = source_udfs
