@@ -38,16 +38,15 @@ def main(lims, pid, epp_logger):
             sample_mesurements = qubit_result_file[sample]
             if "Sample Concentration" in sample_mesurements.keys():
                 conc, unit = sample_mesurements["Sample Concentration"]
-                print conc
-                print unit
-                if unit == 'ng/mL' and conc != 'Out Of Range':
-                    conc = np.true_divide(conc, 1000)
-                analyte.udf['Concentration'] = conc
-                analyte.udf['Conc. Units'] = 'ng/ul'
                 if conc == 'Out Of Range':
                     analyte.qc_flag = "Fail"
                 else:
                     analyte.qc_flag = "Pass"
+                    conc = float(conc)
+                    if unit == 'ng/mL':
+                        conc = np.true_divide(conc, 1000)
+                    analyte.udf['Concentration'] = conc
+                    analyte.udf['Conc. Units'] = 'ng/ul'
                 try:
                     analyte.put()
                     info = "Qubit mesurements has sucsessfully ben copied from Result File"
