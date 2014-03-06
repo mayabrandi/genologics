@@ -24,18 +24,6 @@ from genologics.entities import Process
 from genologics.epp import EppLogger
 from genologics.epp import ReadResultFiles
 lims = Lims(BASEURI,USERNAME,PASSWORD)
-process = Process(lims,id = '24-38458')
-file_handler = ReadResultFiles(process)
-qubit_result_file = file_handler.shared_files['Qubit Result File']
-qubit_result_file = file_handler.format_parsed_file(qubit_result_file)
-analytes, inf = process.analytes()
-for analyte in analytes:
-    sample = analyte.samples[0].name
-    if qubit_result_file.has_key(sample):
-        sample_sesurements = qubit_result_file[sample]
-    else:
-        print sample
-
 
 def main(lims, pid, epp_logger):
     process = Process(lims,id = pid)
@@ -50,6 +38,8 @@ def main(lims, pid, epp_logger):
             sample_mesurements = qubit_result_file[sample]
             if "Sample Concentration" in sample_mesurements.keys():
                 conc, unit = sample_mesurements["Sample Concentration"]
+                print conc
+                print unit
                 if unit == 'ng/mL' and conc != 'Out Of Range':
                     conc = np.true_divide(conc, 1000)
                 analyte.udf['Concentration'] = conc
@@ -72,7 +62,7 @@ def main(lims, pid, epp_logger):
         
 if __name__ == "__main__":
     parser = ArgumentParser(description=DESC)
-    parser.add_argument('--pid', default = '24-37754', dest = 'pid',
+    parser.add_argument('--pid', default = '24-38458', dest = 'pid',
                         help='Lims id for current Process')
     parser.add_argument('--log', dest = 'log',
                         help=('File name for standard log file, '
