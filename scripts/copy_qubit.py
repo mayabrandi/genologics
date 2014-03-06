@@ -72,7 +72,7 @@ def main(lims, pid, epp_logger):
         
 if __name__ == "__main__":
     parser = ArgumentParser(description=DESC)
-    parser.add_argument('--pid', default = '24-37754', dest = 'pid'
+    parser.add_argument('--pid', default = '24-37754', dest = 'pid',
                         help='Lims id for current Process')
     parser.add_argument('--log', dest = 'log',
                         help=('File name for standard log file, '
