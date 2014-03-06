@@ -233,26 +233,20 @@ class ReadResultFiles():
         for line in parsed_file:
             if keys:
                 samp = line[0]
-                qubit_info[samp] = {}
-                for col in range(len(keys)):
-                    if keys[col] != '':
-                        qubit_info[samp][keys[col]] = line[col]
-                    else:
-                        qubit_info[samp][keys[col-1]] = (qubit_info[samp][keys[col-1]], line[col])
+                if qubit_info has_key(samp):
+                    ########Raise Error!! Warning to user
+                    logging.info('{0} occurs more than once in file'.format(samp))
+                else:
+                    qubit_info[samp] = {}
+                    for col in range(len(keys)):
+                        if keys[col] != '':
+                            qubit_info[samp][keys[col]] = line[col]
+                        else:
+                            qubit_info[samp][keys[col-1]] = (qubit_info[samp][keys[col-1]], line[col])
             if line[0].strip() == first_header:
                 keys = line
         return qubit_info
 
-
-
-class File2Field():
-    """
-    argumnets:
-    
-    file_name       """
-
-    def __init__(self, parsed_file, d_elt, relation_obj):
-        self.parsed_file = parsed_file
 
 class CopyField(object):
     """Class to copy any filed (or udf) from any lims element to any 

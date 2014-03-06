@@ -14,6 +14,7 @@ Written by Maya Brandi
 import os
 import sys
 import logging
+import numpy as np
 
 from argparse import ArgumentParser
 
@@ -22,52 +23,53 @@ from genologics.config import BASEURI,USERNAME,PASSWORD
 from genologics.entities import Process
 from genologics.epp import EppLogger
 from genologics.epp import ReadResultFiles
+lims = Lims(BASEURI,USERNAME,PASSWORD)
+process = Process(lims,id = '24-38458')
+file_handler = ReadResultFiles(process)
+qubit_result_file = file_handler.shared_files['Qubit Result File']
+qubit_result_file = file_handler.format_parsed_file(qubit_result_file)
+analytes, inf = process.analytes()
+for analyte in analytes:
+    sample = analyte.samples[0].name
+    if qubit_result_file.has_key(sample):
+        sample_sesurements = qubit_result_file[sample]
+    else:
+        print sample
 
-def main(lims, args, epp_logger):
-    process = Process(lims,id = args.pid)
-    files = ReadResultFiles(process)
-    qubit_result_file = files.shared_files[args.file]
 
-    d_elts = []
-    no_updated = 0
-    incorrect_udfs = 0
-    analytes, inf = s_elt.analytes()
+def main(lims, pid, epp_logger):
+    process = Process(lims,id = pid)
+    file_handler = ReadResultFiles(process) # logging
+    qubit_result_file = file_handler.shared_files['Qubit Result File']
+    qubit_result_file = file_handler.format_parsed_file(qubit_result_file)
+    analytes, inf = process.analytes()
 
     for analyte in analytes:
-        for samp in analyte.samples:
-            d_elts.append(samp.project)
-    d_elts = list(set(d_elts))
-
-    if args.status_changelog:
-        dir = os.getcwd()
-        destination = os.path.join(dir, args.status_changelog)
-        if not os.path.isfile(destination):
-            epp_logger.prepend_old_log(args.status_changelog)
-
-    for d_elt in d_elts:
-        with open(args.status_changelog, 'a') as changelog_f:
-            if args.source_udf in s_elt.udf:
-                copy_sesion = CopyField(s_elt, d_elt, args.source_udf, args.dest_udf)
-                test = copy_sesion.copy_udf(changelog_f)
-                if test:
-                    no_updated = no_updated + 1
+        sample = analyte.samples[0].name
+        if qubit_result_file.has_key(sample):
+            sample_mesurements = qubit_result_file[sample]
+            if "Sample Concentration" in sample_mesurements.keys():
+                conc, unit = sample_mesurements["Sample Concentration"]
+                if unit == 'ng/mL' and conc != 'Out Of Range':
+                    conc = np.true_divide(conc, 1000)
+                analyte.udf['Concentration'] = conc
+                analyte.udf['Conc. Units'] = 'ng/ul'
+                if conc == 'Out Of Range':
+                    analyte.qc_flag = "Fail"
+                else:
+                    analyte.qc_flag = "Pass"
+                try:
+                    analyte.put()
+                    info = "Qubit mesurements has sucsessfully ben copied from Result File"
+                    logging.info(('Qubit mesurements were copied sucsessfully.'))
+                except (TypeError, HTTPError) as e:
+                    print >> sys.stderr, "Error while updating element: {0}".format(e)
             else:
-                logging.warning(("Udf: {1} in Process {0} is undefined/blank, exiting").format(s_elt.id, args.source_udf))
-                incorrect_udfs = incorrect_udfs + 1
-
-    if incorrect_udfs > 0:
-        warn = "Failed to update %s project(s) due to wrong source udf info." %incorrect_udfs
-    else:
-        warn = ''
-
-    d = {'up': no_updated,
-         'ap': len(d_elts),
-         'w' : warn}
-
-    abstract = ("Updated {up} projects(s), out of {ap} in total. {w}").format(**d)
-    print >> sys.stderr, abstract
-
-
+                    logging.info(('Sample Concentration missing for Sample {0} in Qubit Result File'.format(sample)))
+                
+        else:
+            logging.info(('Sample {0} missing in Qubit Result File'.format(sample)))
+        
 if __name__ == "__main__":
     parser = ArgumentParser(description=DESC)
     parser.add_argument('--pid', default = '24-37754', dest = 'pid'
@@ -75,14 +77,6 @@ if __name__ == "__main__":
     parser.add_argument('--log', dest = 'log',
                         help=('File name for standard log file, '
                               'for runtime information and problems.'))
-    parser.add_argument('-c', '--status_changelog', dest =  'status_changelog',
-                        help=('File name for status changelog file, for'
-                              'concise information on who, what and when'
-                              'for status change events. '
-                              'Prepends the old changelog file by default.'))
-    parser.add_argument('-f','--file', default = 'Qubit Result File', dest = 'file',
-                        help=('Result file to copy from'))
-
 
     args = parser.parse_args()
 
@@ -90,5 +84,5 @@ if __name__ == "__main__":
     lims.check_version()
 
     with EppLogger(log_file=args.log, lims=lims, prepend=True) as epp_logger:
-        main(lims, args, epp_logger)
+        main(lims, args.pid, epp_logger)
 
