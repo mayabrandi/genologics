@@ -39,9 +39,9 @@ def main(lims, pid, epp_logger):
             if "Sample Concentration" in sample_mesurements.keys():
                 conc, unit = sample_mesurements["Sample Concentration"]
                 if conc == 'Out Of Range':
-                    analyte.qc_flag = "Fail"
+                    analyte.qc_flag = "FAILED"
                 else:
-                    analyte.qc_flag = "Pass"
+                    analyte.qc_flag = "PASSED"
                     conc = float(conc)
                     if unit == 'ng/mL':
                         conc = np.true_divide(conc, 1000)
