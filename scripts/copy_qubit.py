@@ -17,7 +17,7 @@ import logging
 import numpy as np
 
 from argparse import ArgumentParser
-
+from requests import HTTPError
 from genologics.lims import Lims
 from genologics.config import BASEURI,USERNAME,PASSWORD
 from genologics.entities import Process
@@ -47,6 +47,7 @@ def main(lims, pid, epp_logger):
                         conc = np.true_divide(conc, 1000)
                     analyte.udf['Concentration'] = conc
                     analyte.udf['Conc. Units'] = 'ng/ul'
+                p
                 try:
                     analyte.put()
                     info = "Qubit mesurements has sucsessfully ben copied from Result File"
