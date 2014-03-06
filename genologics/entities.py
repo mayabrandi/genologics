@@ -680,6 +680,14 @@ class Process(Entity):
             ids = list(frozenset(ids))
         return map(lambda id: Artifact(self.lims,id=id),ids)
 
+
+    def result_files(shared = True):
+        """
+        """
+        ids = map(lambda io: io[1]['limsid'] if io[1]['output-generation-type'] == "PerInput" ,self.input_output_maps)
+        ids = list(frozenset(ids))
+        return map(lambda id: Artifact(self.lims,id=id),ids)
+
     def analytes(self):
         """Retreving the output Analytes of the process, if existing. 
         If the process is not producing any output analytes, the input 
