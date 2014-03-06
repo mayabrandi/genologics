@@ -684,7 +684,7 @@ class Process(Entity):
     def result_files(shared = True):
         """
         """
-        ids = map(lambda io: io[1]['limsid'] if io[1]['output-generation-type'] == "PerInput" ,self.input_output_maps)
+        ids = map(lambda io: io[1]['limsid'] if io[1]['output-generation-type'] == "PerInput" else None ,self.input_output_maps)
         ids = list(frozenset(ids))
         return map(lambda id: Artifact(self.lims,id=id),ids)
 
