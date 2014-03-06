@@ -47,11 +47,9 @@ def main(lims, pid, epp_logger):
                         conc = np.true_divide(conc, 1000)
                     analyte.udf['Concentration'] = conc
                     analyte.udf['Conc. Units'] = 'ng/ul'
-                p
                 try:
                     analyte.put()
-                    info = "Qubit mesurements has sucsessfully ben copied from Result File"
-                    logging.info(('Qubit mesurements were copied sucsessfully.'))
+                    #logging.info(('Qubit mesurements were copied sucsessfully.'))
                 except (TypeError, HTTPError) as e:
                     print >> sys.stderr, "Error while updating element: {0}".format(e)
             else:
