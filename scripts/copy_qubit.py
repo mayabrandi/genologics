@@ -49,7 +49,7 @@ def main(lims, pid, epp_logger):
                     analyte.udf['Conc. Units'] = 'ng/ul'
                 try:
                     analyte.put()
-                    #logging.info(('Qubit mesurements were copied sucsessfully.'))
+                    logging.info('Qubit mesurements were copied sucsessfully.')
                 except (TypeError, HTTPError) as e:
                     print >> sys.stderr, "Error while updating element: {0}".format(e)
             else:
