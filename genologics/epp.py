@@ -233,7 +233,7 @@ class ReadResultFiles():
         for line in parsed_file:
             if keys:
                 samp = line[0]
-                if qubit_info has_key(samp):
+                if qubit_info.has_key(samp):
                     ########Raise Error!! Warning to user
                     logging.info('{0} occurs more than once in file'.format(samp))
                 else:
