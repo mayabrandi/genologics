@@ -47,6 +47,7 @@ def main(lims, pid, epp_logger):
                         conc = np.true_divide(conc, 1000)
                     analyte.udf['Concentration'] = conc
                     analyte.udf['Conc. Units'] = 'ng/ul'
+                print analyte
                 try:
                     analyte.put()
                     logging.info('Qubit mesurements were copied sucsessfully.')
