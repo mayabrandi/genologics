@@ -211,6 +211,7 @@ class ReadResultFiles():
         for f in files:
             if len(f.files) > 0:
                 file_path = f.files[0].content_location.split('scilifelab.se')[1]
+                print file_path
                 if file_path.split('.')[1] == 'csv':
                     fo = open(file_path ,'r')
                     parsed_files[f.name] = [row for row in csv.reader(fo.read().splitlines())]
