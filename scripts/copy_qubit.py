@@ -39,7 +39,7 @@ def main(lims, pid, epp_logger):
                 'user_string': 'Some samples are missing in Qubit Result File, and were not copied.'},
             'missing_info' : {'samples':[],
                 'log_string':'Sample Concentration missing in Qubit Result File for Samples:',
-                'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'}
+                'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'},
             'abstract':''}
 
     for target_file in target_files:
