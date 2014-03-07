@@ -249,6 +249,8 @@ class ReadResultFiles():
         if warn:
             warn = 'Row names: {0}, occurs more than once in file'.format(', '.join(warn))
             logging.info(warn)
+        else:
+            warn =''
         return qubit_info, warn
 
 
