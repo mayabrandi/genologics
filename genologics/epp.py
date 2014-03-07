@@ -231,12 +231,12 @@ class ReadResultFiles():
                             the heather line."""
         qubit_info = {}
         keys = []
+        warn = []
         for line in parsed_file:
             if keys:
                 samp = line[0]
                 if qubit_info.has_key(samp):
-                    print >> sys.stderr, '{0} occurs more than once in file'.format(samp)
-                    logging.info('{0} occurs more than once in file'.format(samp))
+                    warn.append(samp)
                 else:
                     qubit_info[samp] = {}
                     for col in range(len(keys)):
@@ -246,7 +246,10 @@ class ReadResultFiles():
                             qubit_info[samp][keys[col-1]] = (qubit_info[samp][keys[col-1]], line[col])
             if line[0].strip() == first_header:
                 keys = line
-        return qubit_info
+        if warn:
+            warn = 'Rownames: {0}, occurs more than once in file'.format(', '.join(warn))
+            logging.info(warn)
+        return qubit_info, warn
 
 
 class CopyField(object):
