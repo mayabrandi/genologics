@@ -200,25 +200,25 @@ class ReadResultFiles():
     def __init__(self, process):
         self.process = process
         self.file = file
-        self.shared_files = self._pars_shared_csv()
+        self.shared_csv_files = self._pars_shared_csv('SharedResultFile')
+        self.perinput_csv_files = self._pars_shared_csv('ResultFile')
 
-    def _pars_shared_csv(self):
+    def _pars_shared_csv(self, output_type):
         """Reads a csv into a list of lists, where sub lists are lines 
         of the csv."""
         outs = self.process.all_outputs()
-        files = filter(lambda a: a.output_type == 'SharedResultFile', outs)
+        files = filter(lambda a: a.output_type == output_type, outs)
         parsed_files = {}
         for f in files:
             if len(f.files) > 0:
                 file_path = f.files[0].content_location.split('scilifelab.se')[1]
-                print file_path
-                if file_path.split('.')[1] == 'csv':
+                if len(file_path.split('.')) > 1 and file_path.split('.')[-1] == 'csv':
                     fo = open(file_path ,'r')
                     parsed_files[f.name] = [row for row in csv.reader(fo.read().splitlines())]
                     fo.close()
         return parsed_files
 
-    def format_parsed_file(self, parsed_file, first_header = 'Sample'):
+    def format_csv_file(self, parsed_file, first_header = 'Sample'):
         """Function to formate a parsed csv.
 
         Arguments and Output:
@@ -235,7 +235,7 @@ class ReadResultFiles():
             if keys:
                 samp = line[0]
                 if qubit_info.has_key(samp):
-                    ########Raise Error!! Warning to user
+                    print >> sys.stderr, '{0} occurs more than once in file'.format(samp)
                     logging.info('{0} occurs more than once in file'.format(samp))
                 else:
                     qubit_info[samp] = {}

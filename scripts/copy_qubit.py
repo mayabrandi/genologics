@@ -28,8 +28,8 @@ lims = Lims(BASEURI,USERNAME,PASSWORD)
 def main(lims, pid, epp_logger):
     process = Process(lims,id = pid)
     file_handler = ReadResultFiles(process) # logging
-    qubit_result_file = file_handler.shared_files['Qubit Result File']
-    qubit_result_file = file_handler.format_parsed_file(qubit_result_file)
+    qubit_result_file = file_handler.shared_csv_files['Qubit Result File']
+    qubit_result_file = file_handler.format_csv_file(qubit_result_file)
     target_files = process.result_files()
     logg = {'sucsessfully_copied' : {'samples':[],
             'log_string':'Qubit mesurements were copied sucsessfully for samples:',
