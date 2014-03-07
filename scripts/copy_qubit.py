@@ -30,26 +30,25 @@ def main(lims, pid, epp_logger):
     file_handler = ReadResultFiles(process) # logging
     qubit_result_file = file_handler.shared_files['Qubit Result File']
     qubit_result_file = file_handler.format_parsed_file(qubit_result_file)
-    analytes, inf = process.analytes()
+    target_files = process.result_files()
 
-    for analyte in analytes:
-        sample = analyte.samples[0].name
+    for target_file in target_files:
+        sample = target_file.samples[0].name
         if qubit_result_file.has_key(sample):
             sample_mesurements = qubit_result_file[sample]
             if "Sample Concentration" in sample_mesurements.keys():
                 conc, unit = sample_mesurements["Sample Concentration"]
                 if conc == 'Out Of Range':
-                    analyte.qc_flag = "FAILED"
+                    target_file.qc_flag = "FAILED"
                 else:
-                    analyte.qc_flag = "PASSED"
+                    target_file.qc_flag = "PASSED"
                     conc = float(conc)
                     if unit == 'ng/mL':
                         conc = np.true_divide(conc, 1000)
-                    analyte.udf['Concentration'] = conc
-                    analyte.udf['Conc. Units'] = 'ng/ul'
-                print analyte
+                    target_file.udf['Concentration'] = conc
+                    target_file.udf['Conc. Units'] = 'ng/ul'
                 try:
-                    analyte.put()
+                    target_file.put()
                     logging.info('Qubit mesurements were copied sucsessfully.')
                 except (TypeError, HTTPError) as e:
                     print >> sys.stderr, "Error while updating element: {0}".format(e)
