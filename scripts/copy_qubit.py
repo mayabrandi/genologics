@@ -32,14 +32,15 @@ def main(lims, pid, epp_logger):
     qubit_result_file = file_handler.format_csv_file(qubit_result_file)
     target_files = process.result_files()
     logg = {'sucsessfully_copied' : {'samples':[],
-            'log_string':'Qubit mesurements were copied sucsessfully for samples:',
-            'user_string': 'Samples were sucsessfully copied.'},
+                'log_string':'Qubit mesurements were copied sucsessfully for samples:',
+                'user_string': 'Samples were sucsessfully copied.'},
             'missing' : {'samples':[],
-            'log_string':'Samples missing in Qubit Result File:',
-            'user_string': 'Some samples are missing in Qubit Result File, and were not copied.'},
+                'log_string':'Samples missing in Qubit Result File:',
+                'user_string': 'Some samples are missing in Qubit Result File, and were not copied.'},
             'missing_info' : {'samples':[],
-            'log_string':'Sample Concentration missing in Qubit Result File for Samples:',
-            'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'}}
+                'log_string':'Sample Concentration missing in Qubit Result File for Samples:',
+                'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'}
+            'abstract':''}
 
     for target_file in target_files:
         sample = target_file.samples[0].name
@@ -69,9 +70,9 @@ def main(lims, pid, epp_logger):
     for subj, inf in logg.items():
         if inf['samples']:
             logging.info( '{0} {1}.'.format(inf['log_string'], ', '.join(inf['samples'])))
-            user_info = ' '.join(user_info, inf['user_string'])
+            logg['abstract'] = ' '.join(logg['abstract'], inf['user_string'])
 
-    print >> sys.stderr, user_info
+    print >> sys.stderr, logg['abstract']
 
 if __name__ == "__main__":
     parser = ArgumentParser(description=DESC)
