@@ -34,6 +34,9 @@ def main(lims, pid, epp_logger):
     logg = {'sucsessfully_copied' : {'samples':[],
                 'log_string':'Qubit mesurements were copied sucsessfully for samples:',
                 'user_string': 'Samples were sucsessfully copied.'},
+            'un_sucsessfully_copied' : {'samples':[],
+                'log_string':'Qubit mesurements were found but not sucsessfully coppied for samples:',
+                'user_string': 'Qubit mesurements were found but not sucsessfully coppied for some samples.'},
             'missing' : {'samples':[],
                 'log_string':'Samples missing in Qubit Result File:',
                 'user_string': 'Some samples are missing in Qubit Result File, and were not copied.'},
@@ -61,6 +64,7 @@ def main(lims, pid, epp_logger):
                     target_file.put()
                     logging['sucsessfully_copied']['samples'].append(sample)
                 except (TypeError, HTTPError) as e:
+                    logging['un_sucsessfully_copied']['samples'].append(sample)
                     print >> sys.stderr, "Error while updating element: {0}".format(e)
             else:
                 logg['missing_info']['samples'].append(sample)       
