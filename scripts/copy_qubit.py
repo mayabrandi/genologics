@@ -39,8 +39,8 @@ def main(lims, pid, epp_logger):
                 'user_string': 'Some samples are missing in Qubit Result File, and were not copied.'},
             'missing_info' : {'samples':[],
                 'log_string':'Sample Concentration missing in Qubit Result File for Samples:',
-                'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'},
-            'abstract':''}
+                'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'}}
+    abstract = ''
 
     for target_file in target_files:
         sample = target_file.samples[0].name
@@ -68,11 +68,12 @@ def main(lims, pid, epp_logger):
             logg['missing']['samples'].append(sample)
 
     for subj, inf in logg.items():
+        print 
         if inf['samples']:
             logging.info( '{0} {1}.'.format(inf['log_string'], ', '.join(inf['samples'])))
-            logg['abstract'] = ' '.join(logg['abstract'], inf['user_string'])
+            abstract = ' '.join(abstract, inf['user_string'])
 
-    print >> sys.stderr, logg['abstract']
+    print >> sys.stderr, abstract
 
 if __name__ == "__main__":
     parser = ArgumentParser(description=DESC)
