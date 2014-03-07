@@ -42,7 +42,7 @@ def main(lims, pid, epp_logger):
                 'user_string': 'Some samples are missing in Qubit Result File, and were not copied.'},
             'missing_info' : {'samples':[],
                 'log_string':'Sample Concentration missing in Qubit Result File for Samples:',
-                'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'}}
+                'user_string': 'Some Samples had missing or bad formated info in Qubit Result File and were not copied.'}}
     abstract = ''
 
     for target_file in target_files:
@@ -54,20 +54,21 @@ def main(lims, pid, epp_logger):
                 if conc == 'Out Of Range':
                     target_file.qc_flag = "FAILED"
                 else:
-                    target_file.qc_flag = "PASSED"
-                    conc = float(conc)
-                    if unit == 'ng/mL':
-                        conc = np.true_divide(conc, 1000)
-                    target_file.udf['Concentration'] = conc
-                    target_file.udf['Conc. Units'] = 'ng/ul'
+                    try:
+                        conc = float(conc)
+                        target_file.qc_flag = "PASSED"
+                        if unit == 'ng/mL':
+                            conc = np.true_divide(conc, 1000)
+                        target_file.udf['Concentration'] = conc
+                        target_file.udf['Conc. Units'] = 'ng/ul'
+                    except:
+                        logg['missing_info']['samples'].append(sample)
                 try:
                     target_file.put()
                     logg['sucsessfully_copied']['samples'].append(sample)
                 except (TypeError, HTTPError) as e:
                     logg['un_sucsessfully_copied']['samples'].append(sample)
-                    print >> sys.stderr, "Error while updating element: {0}".format(e)
-            else:
-                logg['missing_info']['samples'].append(sample)       
+                    print >> sys.stderr, "Error while updating element: {0}".format(e)    
         else:
             logg['missing']['samples'].append(sample)
 
