@@ -64,7 +64,7 @@ def main(lims, pid, epp_logger):
             else:
                 logg['missing_info']['samples'].append(sample)       
         else:
-            logg['missing_samples']['samples'].append(sample)
+            logg['missing']['samples'].append(sample)
 
     for subj, inf in logg.items():
         if inf['samples']:
