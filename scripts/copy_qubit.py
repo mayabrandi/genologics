@@ -62,9 +62,9 @@ def main(lims, pid, epp_logger):
                     target_file.udf['Conc. Units'] = 'ng/ul'
                 try:
                     target_file.put()
-                    logging['sucsessfully_copied']['samples'].append(sample)
+                    logg['sucsessfully_copied']['samples'].append(sample)
                 except (TypeError, HTTPError) as e:
-                    logging['un_sucsessfully_copied']['samples'].append(sample)
+                    logg['un_sucsessfully_copied']['samples'].append(sample)
                     print >> sys.stderr, "Error while updating element: {0}".format(e)
             else:
                 logg['missing_info']['samples'].append(sample)       
