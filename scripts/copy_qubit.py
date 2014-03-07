@@ -33,7 +33,7 @@ def main(lims, pid, epp_logger):
     target_files = process.result_files()
     logg = {'sucsessfully_copied' : {'samples':[],
                 'log_string':'Qubit mesurements were copied sucsessfully for samples:',
-                'user_string': 'Samples were sucsessfully copied.'},
+                'user_string': ''},
             'un_sucsessfully_copied' : {'samples':[],
                 'log_string':'Qubit mesurements were found but not sucsessfully coppied for samples:',
                 'user_string': 'Qubit mesurements were found but not sucsessfully coppied for some samples.'},
@@ -76,7 +76,7 @@ def main(lims, pid, epp_logger):
         print 
         if inf['samples']:
             logging.info( '{0} {1}.'.format(inf['log_string'], ', '.join(inf['samples'])))
-            abstract = ' '.join([abstract, inf['user_string'], warn])
+            abstract = ' '.join([abstract, inf['user_string']])
 
     print >> sys.stderr, abstract
 
