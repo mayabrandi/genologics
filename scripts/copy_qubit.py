@@ -73,13 +73,9 @@ def main(lims, pid, epp_logger):
             logg['missing']['samples'].append(sample)
 
     for subj, inf in logg.items():
-        print 
         if inf['samples']:
             logging.info( '{0} {1}.'.format(inf['log_string'], ', '.join(inf['samples'])))
-            abstract = ' '.join([abstract, inf['user_string']]) 
-    print type(warn)
-    print warn
-    print abstract
+            abstract = ' '.join([abstract, inf['user_string']])
     print >> sys.stderr, ' '.join([abstract, warn])
 
 if __name__ == "__main__":
