@@ -76,7 +76,7 @@ def main(lims, pid, epp_logger):
         print 
         if inf['samples']:
             logging.info( '{0} {1}.'.format(inf['log_string'], ', '.join(inf['samples'])))
-            abstract = ' '.join([abstract, inf['user_string']])
+            abstract = ' '.join([abstract, inf['user_string'],warn])
 
     print >> sys.stderr, abstract
 
