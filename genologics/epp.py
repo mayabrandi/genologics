@@ -247,7 +247,7 @@ class ReadResultFiles():
             if line[0].strip() == first_header:
                 keys = line
         if warn:
-            warn = 'Rownames: {0}, occurs more than once in file'.format(', '.join(warn))
+            warn = 'Row names: {0}, occurs more than once in file'.format(', '.join(warn))
             logging.info(warn)
         return qubit_info, warn
 
