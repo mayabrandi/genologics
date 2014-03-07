@@ -31,6 +31,15 @@ def main(lims, pid, epp_logger):
     qubit_result_file = file_handler.shared_files['Qubit Result File']
     qubit_result_file = file_handler.format_parsed_file(qubit_result_file)
     target_files = process.result_files()
+    logg = {'sucsessfully_copied' : {'samples':[],
+            'log_string':'Qubit mesurements were copied sucsessfully for samples:',
+            'user_string': 'Samples were sucsessfully copied.'},
+            'missing' : {'samples':[],
+            'log_string':'Samples missing in Qubit Result File:',
+            'user_string': 'Some samples are missing in Qubit Result File, and were not copied.'},
+            'missing_info' : {'samples':[],
+            'log_string':'Sample Concentration missing in Qubit Result File for Samples:',
+            'user_string': 'Some Samples had Concentration missing in Qubit Result File and were not copied.'}}
 
     for target_file in target_files:
         sample = target_file.samples[0].name
@@ -49,15 +58,21 @@ def main(lims, pid, epp_logger):
                     target_file.udf['Conc. Units'] = 'ng/ul'
                 try:
                     target_file.put()
-                    logging.info('Qubit mesurements were copied sucsessfully.')
+                    logging['sucsessfully_copied']['samples'].append(sample)
                 except (TypeError, HTTPError) as e:
                     print >> sys.stderr, "Error while updating element: {0}".format(e)
             else:
-                    logging.info(('Sample Concentration missing for Sample {0} in Qubit Result File'.format(sample)))
-                
+                logg['missing_info']['samples'].append(sample)       
         else:
-            logging.info(('Sample {0} missing in Qubit Result File'.format(sample)))
-        
+            logg['missing_samples']['samples'].append(sample)
+
+    for subj, inf in logg.items():
+        if inf['samples']:
+            logging.info( '{0} {1}.'.format(inf['log_string'], ', '.join(inf['samples'])))
+            user_info = ' '.join(user_info, inf['user_string'])
+
+    print >> sys.stderr, user_info
+
 if __name__ == "__main__":
     parser = ArgumentParser(description=DESC)
     parser.add_argument('--pid', default = '24-38458', dest = 'pid',
