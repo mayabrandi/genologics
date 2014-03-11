@@ -1,16 +1,21 @@
 #!/usr/bin/env python
-DESC = """EPP script to copy user defined field from any process to associated 
-project/projects in Clarity LIMS. If the specifyed process handles many artifacts 
-associated to different projects, all these projects will get the specifyed udf.
+DESC = """EPP script to copy 'concentration' and 'concentration unit' for each 
+sample sample in the 'Qubit Result File' to the 'Concentration' and 'Conc. Units' 
+fields of the output analytes of the process.
+
+Warnings are generated to the user and stored in regular log file wich allso 
+contains regular execution information in the folowing cases:
+
+1) missing row names (samples) in file
+2) duplicated row names (samples)
+3) missing value (concentrations) 
+4) values found but for some reason are not successfully copied:
  
 Can be executed in the background or triggered by a user pressing a "blue button".
 
-The script can output two different logs, where the status_changelog 
-contains notes with the technician, the date and changed status for each 
-copied status. The regular log file contains regular execution information.
-
 Written by Maya Brandi 
 """
+
 import os
 import sys
 import logging
@@ -27,10 +32,11 @@ lims = Lims(BASEURI,USERNAME,PASSWORD)
 
 def main(lims, pid, epp_logger):
     process = Process(lims,id = pid)
-    file_handler = ReadResultFiles(process) # logging
+    file_handler = ReadResultFiles(process)
     qubit_result_file = file_handler.shared_csv_files['Qubit Result File']
     qubit_result_file, warn = file_handler.format_csv_file(qubit_result_file)
     target_files = process.result_files()
+    abstract = ''
     logg = {'sucsessfully_copied' : {'samples':[],
                 'log_string':'Qubit mesurements were copied sucsessfully for samples:',
                 'user_string': ''},
@@ -43,7 +49,6 @@ def main(lims, pid, epp_logger):
             'missing_info' : {'samples':[],
                 'log_string':'Sample Concentration missing in Qubit Result File for Samples:',
                 'user_string': 'Some Samples had missing or bad formated info in Qubit Result File and were not copied.'}}
-    abstract = ''
 
     for target_file in target_files:
         sample = target_file.samples[0].name
