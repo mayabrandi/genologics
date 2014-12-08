@@ -76,21 +76,23 @@ class UndemuxInd():
             cont_name = self.process.all_inputs()[0].location[0].name
         except:
             sys.exit('Could not find container name.')
-        miseq_run  = lims.get_processes(type = 'MiSeq Run (MiSeq) 4.0', 
-                                         udf={'Reagent Cartridge ID':cont_name})
         try:
+            run  = lims.get_processes(type = 'MiSeq Run (MiSeq) 4.0',
+                                         udf={'Reagent Cartridge ID':cont_name})
             logging.info('looking for mi-seq run ID')
-            ID = miseq_run[0].udf['Flow Cell ID']
+            ID = run[0].udf['Flow Cell ID']
             self.miseq = True
         except:
             logging.info('Could not find mi-seq run ID with Reagent Cartridge '
                             'ID {0}. Looking for Hiseq run.'.format(cont_name))
+            run  = lims.get_processes(type = 'Illumina Sequencing (Illumina SBS) 4.0',
+                                         udf={'Reagent Cartridge ID':cont_name})
             ID = cont_name
         logging.info('looking for sequencing setup')
         try:
-            Read_1_Cycles = miseq_run[0].udf['Read 1 Cycles']
+            Read_1_Cycles = run[0].udf['Read 1 Cycles']
             try:
-                Read_2_Cycles = miseq_run[0].udf['Read 2 Cycles']
+                Read_2_Cycles = run[0].udf['Read 2 Cycles']
                 self.single = False
             except:
                 self.single = True
