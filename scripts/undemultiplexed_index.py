@@ -136,7 +136,6 @@ class UndemuxInd():
                         samp = lane_samp['Sample ID']
                         if samp == samp_name:
                             self._set_fields(target_file, lane_samp)
-                            self.nr_lane_samps_updat += 1
 
     def _set_fields(self, target_file, sample_info):
         try:
@@ -184,6 +183,7 @@ class UndemuxInd():
             self.missing_fields.append('# Read Pairs')
         try:
             target_file.qc_flag = self._QC(target_file, sample_info)
+            self.nr_lane_samps_updat += 1
         except:
             self.qc_error = 'WARNING: Could not generate QC for samples. '
         set_field(target_file)
@@ -267,7 +267,7 @@ class UndemuxInd():
         self.abstract.append(self.qc_error)
         if self.missing_fields:
             self.missing_fields = list(set(self.missing_fields))
-            self.abstract.append("WARNING: Could not get demultiplexing info: {0}"
+            self.abstract.append("WARNING: Could not get demultiplexing info for some samples: {0}"
               "".format(', '.join(self.missing_fields)))
         if self.un_exp_ind_warn or self.missing_fields or self.qc_error:
             sys.exit(' '.join(self.abstract))
