@@ -138,7 +138,7 @@ class UndemuxInd():
 
     def _set_fields(self, target_file, sample_info):
         target_file.udf['% One Mismatch Reads (Index)'] = sample_info['% One Mismatch Reads (Index)']
-        target_file.udf['% of Raw Clusters Per Lane'] = sample_info['% of raw clusters per lane'])
+        target_file.udf['% of Raw Clusters Per Lane'] = sample_info['% of raw clusters per lane']
         target_file.udf['%PF'] = sample_info['% PF']
         target_file.udf['Ave Q Score'] = sample_info['Mean Quality Score (PF)']
         Yield_PF_Gb = np.true_divide(float(sample_info['Yield (Mbases)'].replace(',','')), 1000)
