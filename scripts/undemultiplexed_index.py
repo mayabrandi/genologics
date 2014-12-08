@@ -74,7 +74,6 @@ class UndemuxInd():
     def _get_file_path(self):
         try:
             cont_name = self.process.all_inputs()[0].location[0].name
-            print cont_name
         except:
             sys.exit('Could not find container name.')
         try:
