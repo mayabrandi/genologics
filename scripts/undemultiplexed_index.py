@@ -61,6 +61,7 @@ class UndemuxInd():
         self.undem_stat = None 
         self.QC_thresholds = {}
         self.abstract = []
+        self.missing_fields = []
         self.un_exp_ind_warn = ''
         self.nr_lane_samps_updat = 0
         self.nr_lane_samps_tot = 0
@@ -137,22 +138,52 @@ class UndemuxInd():
                             self.nr_lane_samps_updat += 1
 
     def _set_fields(self, target_file, sample_info):
-        target_file.udf['% One Mismatch Reads (Index)'] = sample_info['% One Mismatch Reads (Index)']
-        target_file.udf['% of Raw Clusters Per Lane'] = sample_info['% of raw clusters per lane']
-        target_file.udf['%PF'] = sample_info['% PF']
-        target_file.udf['Ave Q Score'] = sample_info['Mean Quality Score (PF)']
-        Yield_PF_Gb = np.true_divide(float(sample_info['Yield (Mbases)'].replace(',','')), 1000)
-        target_file.udf['Yield PF (Gb)'] = Yield_PF_Gb 
-        target_file.udf['% Perfect Index Read'] = sample_info['% Perfect Index Reads']
-        if not dict(target_file.udf.items()).has_key('% Bases >=Q30'):
-            target_file.udf['% Bases >=Q30'] = sample_info['% of >= Q30 Bases (PF)']
-        if not dict(target_file.udf.items()).has_key('# Reads'):
-            target_file.udf['# Reads'] = sample_info['# Reads'].replace(',','')
-        if self.single:
-            self.read_pairs = target_file.udf['# Reads']
-        else:
-            self.read_pairs = np.true_divide(float(target_file.udf['# Reads']),2)
-        target_file.udf['# Read Pairs'] = self.read_pairs
+        try:
+            target_file.udf['% One Mismatch Reads (Index)'] = float(sample_info['% One Mismatch Reads (Index)'])
+        except:
+            self.missing_fields.append('% One Mismatch Reads (Index)')
+        try:
+            target_file.udf['% of Raw Clusters Per Lane'] = float(sample_info['% of raw clusters per lane'])
+        except:
+            self.missing_fields.append('% of Raw Clusters Per Lane')
+        try:
+            target_file.udf['%PF'] = float(sample_info['% PF'])
+        except:
+            self.missing_fields.append('%PF')
+        try:
+            target_file.udf['Ave Q Score'] = float(sample_info['Mean Quality Score (PF)'])
+        except:
+            self.missing_fields.append('Ave Q Score')
+        try:
+            Yield_PF_Gb = np.true_divide(float(sample_info['Yield (Mbases)'].replace(',','')), 1000)
+            target_file.udf['Yield PF (Gb)'] = float(Yield_PF_Gb)
+        except:
+            self.missing_fields.append('Yield PF (Gb)')
+        try:
+            target_file.udf['% Perfect Index Read'] = float(sample_info['% Perfect Index Reads'])
+        except:
+            self.missing_fields.append('% Perfect Index Read')
+        try:
+            if not dict(target_file.udf.items()).has_key('% Bases >=Q30'):
+                target_file.udf['% Bases >=Q30'] = float(sample_info['% of >= Q30 Bases (PF)'])
+        except:
+            self.missing_fields.append('% Bases >=Q30')
+        try:
+            if not dict(target_file.udf.items()).has_key('# Reads'):
+                target_file.udf['# Reads'] = float(sample_info['# Reads'].replace(',',''))
+        except:
+            self.missing_fields.append('# Reads')
+        try:
+            if self.single:
+                self.read_pairs = float(target_file.udf['# Reads'])
+            else:
+                self.read_pairs = np.true_divide(float(target_file.udf['# Reads']),2)
+            target_file.udf['# Read Pairs'] = self.read_pairs
+        except:
+            self.missing_fields.append('# Read Pairs')
+        if self.missing_fields:
+            self.abstract.append("WARNING: Could not get demultiplexing info: {0}"
+              "".format(', '.join(self.missing_fields)))
         target_file.qc_flag = self._QC(target_file, sample_info)
         set_field(target_file)
 
@@ -232,7 +263,7 @@ class UndemuxInd():
         self.abstract.append("INFO: QC-data found and QC-flags uploaded for {0}"
               " out of {1} analytes. Flags are set based on the selected thresh"
               "olds. ".format(self.nr_lane_samps_updat, self.nr_lane_samps_tot))
-        if self.un_exp_ind_warn:
+        if self.un_exp_ind_warn or self.missing_fields:
             sys.exit(' '.join(self.abstract))
         else:
             print >> sys.stderr, ' '.join(self.abstract)
