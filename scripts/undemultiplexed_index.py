@@ -74,6 +74,7 @@ class UndemuxInd():
     def _get_file_path(self):
         try:
             cont_name = self.process.all_inputs()[0].location[0].name
+            print cont_name
         except:
             sys.exit('Could not find container name.')
         try:
@@ -86,7 +87,7 @@ class UndemuxInd():
             logging.info('Could not find mi-seq run ID with Reagent Cartridge '
                             'ID {0}. Looking for Hiseq run.'.format(cont_name))
             run  = lims.get_processes(type = 'Illumina Sequencing (Illumina SBS) 4.0',
-                                         udf={'Reagent Cartridge ID':cont_name})
+                                         udf={'Flow Cell ID':cont_name})
             ID = cont_name
         logging.info('looking for sequencing setup')
         try:
