@@ -182,14 +182,10 @@ class UndemuxInd():
             target_file.udf['# Read Pairs'] = self.read_pairs
         except:
             self.missing_fields.append('# Read Pairs')
-        if self.missing_fields:
-            self.abstract.append("WARNING: Could not get demultiplexing info: {0}"
-              "".format(', '.join(self.missing_fields)))
         try:
             target_file.qc_flag = self._QC(target_file, sample_info)
         except:
             self.qc_error = 'WARNING: Could not generate QC for samples. '
-            self.abstract.append(self.qc_error)
         set_field(target_file)
 
     def _QC(self, target_file, sample_info):
@@ -268,6 +264,11 @@ class UndemuxInd():
         self.abstract.append("INFO: QC-data found and QC-flags uploaded for {0}"
               " out of {1} analytes. Flags are set based on the selected thresh"
               "olds. ".format(self.nr_lane_samps_updat, self.nr_lane_samps_tot))
+        self.abstract.append(self.qc_error)
+        if self.missing_fields:
+            self.missing_fields = list(set(self.missing_fields))
+            self.abstract.append("WARNING: Could not get demultiplexing info: {0}"
+              "".format(', '.join(self.missing_fields)))
         if self.un_exp_ind_warn or self.missing_fields or self.qc_error:
             sys.exit(' '.join(self.abstract))
         else:
