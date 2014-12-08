@@ -137,19 +137,19 @@ class UndemuxInd():
                             self.nr_lane_samps_updat += 1
 
     def _set_fields(self, target_file, sample_info):
-        target_file.udf['% One Mismatch Reads (Index)'] = float(sample_info['% One Mismatch Reads (Index)'])
-        target_file.udf['% of Raw Clusters Per Lane'] = float(sample_info['% of raw clusters per lane'])
-        target_file.udf['%PF'] = float(sample_info['% PF'])
-        target_file.udf['Ave Q Score'] = float(sample_info['Mean Quality Score (PF)'])
+        target_file.udf['% One Mismatch Reads (Index)'] = sample_info['% One Mismatch Reads (Index)']
+        target_file.udf['% of Raw Clusters Per Lane'] = sample_info['% of raw clusters per lane'])
+        target_file.udf['%PF'] = sample_info['% PF']
+        target_file.udf['Ave Q Score'] = sample_info['Mean Quality Score (PF)']
         Yield_PF_Gb = np.true_divide(float(sample_info['Yield (Mbases)'].replace(',','')), 1000)
         target_file.udf['Yield PF (Gb)'] = Yield_PF_Gb 
-        target_file.udf['% Perfect Index Read'] = float(sample_info['% Perfect Index Reads'])
+        target_file.udf['% Perfect Index Read'] = sample_info['% Perfect Index Reads']
         if not dict(target_file.udf.items()).has_key('% Bases >=Q30'):
-            target_file.udf['% Bases >=Q30'] = float(sample_info['% of >= Q30 Bases (PF)'])
+            target_file.udf['% Bases >=Q30'] = sample_info['% of >= Q30 Bases (PF)']
         if not dict(target_file.udf.items()).has_key('# Reads'):
-            target_file.udf['# Reads'] = float(sample_info['# Reads'].replace(',',''))
+            target_file.udf['# Reads'] = sample_info['# Reads'].replace(',','')
         if self.single:
-            self.read_pairs = int(target_file.udf['# Reads'])
+            self.read_pairs = target_file.udf['# Reads']
         else:
             self.read_pairs = np.true_divide(float(target_file.udf['# Reads']),2)
         target_file.udf['# Read Pairs'] = self.read_pairs
