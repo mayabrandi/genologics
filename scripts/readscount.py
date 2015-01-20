@@ -41,7 +41,7 @@ def main(lims, args, logger):
                     sample.udf['Status (auto)']="Finished"
             except KeyError as e:
                 print e
-                logging.warning("No reads minimum found, cannot set the status auto flag for sample {}".format(sample.name))
+                logging.warning("No reads minimum found, cannot set the status auto flag for sample {0}".format(sample.name))
                 errnb+=1
 
             #commit the changes
@@ -126,7 +126,7 @@ def sumreads(sample, summary):
                 try:
                     sq=lims.get_processes(type=SEQUENCING.values(), inputartifactlimsid=inart.id)[0]
                 except TypeError:
-                    logging.error("Did not manage to get sequencing process for artifact {}".format(inart.id))
+                    logging.error("Did not manage to get sequencing process for artifact {0}".format(inart.id))
                 else:
                     if "Read 2 Cycles" in sq.udf and sq.udf['Read 2 Cycles'] is not None:
                         tot/=2

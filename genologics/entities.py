@@ -663,9 +663,11 @@ class Entity(object):
     _URI = None
 
     def __new__(cls, lims, uri=None, id=None):
-        assert uri or id
         if not uri:
-            uri = lims.get_uri(cls._URI, id)
+            if not id:
+                raise ValueError("Entity uri and id can't be both None")
+            else:
+                uri = lims.get_uri(cls._URI, id)
         try:
             return lims.cache[uri]
         except KeyError:
